@@ -1,13 +1,32 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../../components/Home/Header";
 import Slider from "../../components/Home/Slider";
 import PetListByCategory from "../../components/Home/PetListByCategory";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Colors from "../../constants/Colors";
-import { Link } from "expo-router";
+import { Link, Redirect } from "expo-router";
+import { useAuth, useOAuth, useUser } from "@clerk/clerk-expo";
 
 export default function Home() {
+  // const { isSignedIn } = useAuth();
+
+  // useEffect(async () => {
+  //   console.log("halo");
+  //   if (isSignedIn) {
+  //   } else {
+  //     // return <Redirect href={"/login"} />;
+  //     console.log("belum login");
+  //     // reloadAppAsync({ url: Linking.createURL("/", { scheme: "myapp" }) });
+  //     // await Updates.reloadAsync();
+  //     // reload();
+  //   }
+  // }, []);
+
+  // // const reload = async () => {
+  // //   await Updates.reloadAsync();
+  // // };
+
   return (
     <View
       style={{

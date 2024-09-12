@@ -1,9 +1,16 @@
-import { View, Text, Image, FlatList, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  Button,
+} from "react-native";
 import React, { useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import Colors from "../../constants/Colors";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 
 export default function Profile() {
   const { user } = useUser();
@@ -32,22 +39,25 @@ export default function Profile() {
       icon: "chatbubble",
       path: "/(tabs)/inbox",
     },
-    { id: 4, name: "Logout", icon: "exit", path: "/" },
+    {
+      id: 4,
+      name: "Logout",
+      icon: "exit",
+      path: "/",
+    },
   ];
 
   const router = useRouter();
   const { signOut } = useAuth();
 
   const onPressMenu = (menu) => {
-    // console.log(menu);
-    // console.log(menu.name);
     if (menu.name == "Logout") {
-      // console.log("aaaa");
-      signOut();
+      console.log("logout " + menu.name);
+      signOut({ redirectUrl: "/login" });
+      router.push("/login");
+    } else {
       router.push(menu.path);
     }
-
-    router.push(menu.path);
   };
 
   return (

@@ -1,4 +1,4 @@
-import { View, Text, Image, Pressable } from "react-native";
+import { View, Text, Image, Pressable, Button } from "react-native";
 import React, { useCallback } from "react";
 import Colors from "./../../constants/Colors";
 import * as WebBrowser from "expo-web-browser";
@@ -23,13 +23,17 @@ export default function LoginScreen() {
 
   const onPress = useCallback(async () => {
     try {
-      console.log("halo world");
+      // console.log("halo world");
       const { createdSessionId, signIn, signUp, setActive } =
         await startOAuthFlow({
           redirectUrl: Linking.createURL("/(tabs)/home", { scheme: "myapp" }),
+          reloadApp: true,
         });
 
+      // reload();
+
       if (createdSessionId) {
+        setActive({ session: createdSessionId });
       } else {
         // Use signIn or signUp for next steps such as MFA
       }
