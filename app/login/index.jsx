@@ -1,44 +1,42 @@
 import { View, Text, Image, Pressable } from "react-native";
-import React from "react";
-// import React, { useCallback } from "react";
+import React, { useCallback } from "react";
 import Colors from "./../../constants/Colors";
-// import * as WebBrowser from "expo-web-browser";
-// import { useOAuth } from "@clerk/clerk-expo";
-// import * as Linking from "expo-linking";
-// import { Link } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
+import { useOAuth } from "@clerk/clerk-expo";
+import * as Linking from "expo-linking";
 
-// export const useWarmUpBrowser = () => {
-//   React.useEffect(() => {
-//     void WebBrowser.warmUpAsync();
-//     return () => {
-//       void WebBrowser.coolDownAsync();
-//     };
-//   }, []);
-// };
+export const useWarmUpBrowser = () => {
+  React.useEffect(() => {
+    void WebBrowser.warmUpAsync();
+    return () => {
+      void WebBrowser.coolDownAsync();
+    };
+  }, []);
+};
 
-// WebBrowser.maybeCompleteAuthSession();
+WebBrowser.maybeCompleteAuthSession();
 
 export default function LoginScreen() {
-  // useWarmUpBrowser();
+  useWarmUpBrowser();
 
-  // const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
+  const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
 
-  // const onPress = useCallback(async () => {
-  //   try {
-  //     console.log("halo world");
-  //     const { createdSessionId, signIn, signUp, setActive } =
-  //       await startOAuthFlow({
-  //         redirectUrl: Linking.createURL("/home", { scheme: "myapp" }),
-  //       });
+  const onPress = useCallback(async () => {
+    try {
+      console.log("halo world");
+      const { createdSessionId, signIn, signUp, setActive } =
+        await startOAuthFlow({
+          redirectUrl: Linking.createURL("/(tabs)/home", { scheme: "myapp" }),
+        });
 
-  //     if (createdSessionId) {
-  //     } else {
-  //       // Use signIn or signUp for next steps such as MFA
-  //     }
-  //   } catch (err) {
-  //     console.error("OAuth error", err);
-  //   }
-  // }, []);
+      if (createdSessionId) {
+      } else {
+        // Use signIn or signUp for next steps such as MFA
+      }
+    } catch (err) {
+      console.error("OAuth error", err);
+    }
+  }, []);
 
   return (
     <View style={{ backgroundColor: Colors.WHITE, height: "100%" }}>
@@ -68,7 +66,7 @@ export default function LoginScreen() {
         </Text>
 
         <Pressable
-          onPress={() => console.log("test")}
+          onPress={onPress}
           style={{
             padding: 14,
             marginTop: 100,
