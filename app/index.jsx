@@ -10,9 +10,6 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      {/* <Text style={{ fontSize: 30, fontFamily: "outfit-bold" }}>
-        hello expo.
-      </Text> */}
       <Redirect href="/login" />
     </View>
   );
