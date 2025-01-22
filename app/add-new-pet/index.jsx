@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect } from "react";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import Colors from "../../constants/Colors";
 import { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
@@ -151,6 +151,7 @@ export default function AddNewPet() {
       id: docId,
     });
     setLoading(false);
+    router.push("/home");
   };
 
   const imagePicker = async () => {
