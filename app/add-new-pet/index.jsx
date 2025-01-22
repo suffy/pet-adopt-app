@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect } from "react";
 import { useNavigation } from "expo-router";
@@ -14,19 +15,22 @@ import Colors from "../../constants/Colors";
 import { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import { db } from "../../config/firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
+import { useUser } from "@clerk/clerk-expo";
 
 export default function AddNewPet() {
   const navigation = useNavigation();
   const [formData, setFormData] = useState();
-  const [gender, setGender] = useState("Male");
+  const [gender, setGender] = useState();
   const [categoryList, setCategoryList] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("Cats");
+  const [selectedCategory, setSelectedCategory] = useState();
   const [image, setImage] = useState(null);
-  const [loader, setLoader] = useState(false);
+  const [loading, setLoading] = useState(null);
+
+  const { user } = useUser();
 
   useEffect(() => {
     navigation.setOptions({ headerShown: true, headerTitle: "Add New Pet" });
@@ -50,47 +54,68 @@ export default function AddNewPet() {
 
   const onSubmit = () => {
     // console.log("formData", formData);
+    setLoading(true);
 
     if (!formData?.name) {
       Alert.alert("Please enter pet name");
+      setLoading(false);
       return;
     }
 
     if (!formData?.age) {
       Alert.alert("Please enter pet age");
+      setLoading(false);
       return;
     }
 
     if (!formData?.breed) {
       Alert.alert("Please enter pet breed");
+      setLoading(false);
       return;
     }
 
     if (!formData?.weight) {
       Alert.alert("Please enter pet weight");
+      setLoading(false);
       return;
     }
 
     if (!image) {
       Alert.alert("Please select pet image");
+      setLoading(false);
       return;
     }
 
     if (!formData?.address) {
       Alert.alert("Please enter pet address");
+      setLoading(false);
       return;
     }
 
     if (!formData?.about) {
       Alert.alert("Please enter pet about");
+      setLoading(false);
       return;
     }
+
+    if (!formData?.category) {
+      Alert.alert("Please enter pet category");
+      setLoading(false);
+      return;
+    }
+
+    if (!formData?.sex) {
+      Alert.alert("Please enter pet gender");
+      setLoading(false);
+      return;
+    }
+
+    // console.log("formData", formData);
     uploadGambar(image);
   };
 
   const url = process.env.EXPO_PUBLIC_API_URL;
   const uploadGambar = async (imageUri) => {
-    setLoader(true);
     const response = await FileSystem.uploadAsync(`${url}`, imageUri, {
       fieldName: "file",
       httpMethod: "POST",
@@ -101,16 +126,31 @@ export default function AddNewPet() {
       },
     });
 
-    console.log("response", response);
-    console.log(response.status);
+    // console.log("response", response);
+    // console.log(response.status);
 
     if (response.status == 200) {
       const imageUrl = JSON.parse(response.body)?.filename;
-      console.log(imageUrl);
-      //   SaveFormData(imageUrl);
+      // console.log(imageUrl);
+      SaveFormData(imageUrl);
     }
+  };
 
-    setLoader(false);
+  const SaveFormData = async (imageUrl) => {
+    const imageUrlUploaded = process.env.EXPO_PUBLIC_ASSET_URL + "/" + imageUrl;
+
+    // console.log("imageUrlUploaded", imageUrlUploaded);
+
+    const docId = Date.now().toString();
+    await setDoc(doc(db, "Pets", docId), {
+      ...formData,
+      imageUrl: imageUrlUploaded,
+      username: user?.fullName,
+      email: user?.primaryEmailAddress?.emailAddress,
+      userImage: user?.imageUrl,
+      id: docId,
+    });
+    setLoading(false);
   };
 
   const imagePicker = async () => {
@@ -176,6 +216,7 @@ export default function AddNewPet() {
             handleInputChange("category", itemValue);
           }}
         >
+          <Picker.Item label="Select Category" value="" />
           {categoryList.map((item, index) => (
             <Picker.Item label={item.name} value={item.name} key={index} />
           ))}
@@ -209,6 +250,7 @@ export default function AddNewPet() {
             handleInputChange("sex", itemValue);
           }}
         >
+          <Picker.Item label="Select Gender" value="" />
           <Picker.Item label="Male" value="male" />
           <Picker.Item label="Female" value="female" />
         </Picker>
@@ -242,17 +284,25 @@ export default function AddNewPet() {
         />
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={onSubmit}>
-        <Text
-          style={{
-            fontFamily: "outfit-medium",
-            fontSize: 18,
-            color: Colors.WHITE,
-            textAlign: "center",
-          }}
-        >
-          Submit
-        </Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={onSubmit}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color={Colors.WHITE} />
+        ) : (
+          <Text
+            style={{
+              fontFamily: "outfit-medium",
+              fontSize: 18,
+              color: Colors.WHITE,
+              textAlign: "center",
+            }}
+          >
+            Submit
+          </Text>
+        )}
       </TouchableOpacity>
     </ScrollView>
   );
