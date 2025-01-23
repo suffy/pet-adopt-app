@@ -28,10 +28,14 @@ export default function LoginScreen() {
       const { createdSessionId, signIn, signUp, setActive } =
         await startOAuthFlow({
           redirectUrl: Linking.createURL("/(tabs)/home", { scheme: "myapp" }),
+          reloadApp: true,
+          // reloadAppAfterOAuthFlow: true,
+          // reload: true,
         });
 
       // If sign in was successful, set the active session
       if (createdSessionId) {
+        setActive({ session: createdSessionId });
         // setActive!({ session: createdSessionId })
       } else {
         // Use signIn or signUp returned from startOAuthFlow

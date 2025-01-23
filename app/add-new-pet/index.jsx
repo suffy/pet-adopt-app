@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect } from "react";
-import { router, useNavigation } from "expo-router";
+import { router, useNavigation, useRouter } from "expo-router";
 import Colors from "../../constants/Colors";
 import { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
@@ -31,6 +31,7 @@ export default function AddNewPet() {
   const [loading, setLoading] = useState(null);
 
   const { user } = useUser();
+  const router = useRouter();
 
   useEffect(() => {
     navigation.setOptions({ headerShown: true, headerTitle: "Add New Pet" });
