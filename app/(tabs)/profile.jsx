@@ -41,7 +41,7 @@ export default function Profile() {
   const onPressMenu = (item) => {
     if (item.path === "logout") {
       signOut();
-      router.push("/");
+      router.push("/login/index");
     } else {
       router.push(item.path);
     }

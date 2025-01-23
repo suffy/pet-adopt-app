@@ -2,8 +2,20 @@ import { tokenCache } from "@/cache";
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
+import { useEffect } from "react";
+// import * as SplashScreen from "expo-splash-screen";
+
+// SplashScreen.preventAutoHideAsync();
+
+// SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     SplashScreen.hideAsync();
+  //   }, 1000);
+  // }, []);
+
   const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
   if (!publishableKey) {
